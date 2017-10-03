@@ -1,6 +1,8 @@
 package com.example.pckosek.a010_internalstorage;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -63,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public String readInternalFile() {
@@ -84,8 +87,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+    // UNTESTED!! [taking photos simply and SO 17674634]
+    public String writeInternalImageFile(Bitmap b) {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+
+        Context context = getApplicationContext();
+        try {
+            FileOutputStream fos;
+            fos = context.openFileOutput(imageFileName, Context.MODE_PRIVATE);
+            b.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            return imageFileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // UNTESTED!!
+    public Bitmap readInternalImageFile(String fname)
+    {
+        Context context = getApplicationContext();
+        try {
+            FileInputStream fis;
+            fis = context.openFileInput(fname);
+            Bitmap b = BitmapFactory.decodeStream(fis);
+            return b;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         return null;
-
     }
 }
